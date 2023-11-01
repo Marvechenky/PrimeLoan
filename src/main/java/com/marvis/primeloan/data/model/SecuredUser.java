@@ -7,12 +7,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
-@Getter
-@Setter
+
 @AllArgsConstructor
-@NoArgsConstructor
-@Builder
-public class User implements UserDetails {
+public class SecuredUser implements UserDetails {
     private AppUser appUser;
 
     @Override

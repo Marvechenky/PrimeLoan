@@ -9,18 +9,22 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
-@Entity
+
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Entity
 public class AppUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    private LocalDateTime createdAt;
 
     @NotNull(message = "This field is required")
     @NotEmpty(message = "This field is required")
@@ -37,7 +41,7 @@ public class AppUser {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    private LocalDate DateOfBirth;
+    private LocalDate birthDay;
 
     @NotNull(message = "This field is required")
     @NotEmpty(message = "This field is required")
