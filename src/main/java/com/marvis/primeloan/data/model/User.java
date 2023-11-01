@@ -1,63 +1,52 @@
 package com.marvis.primeloan.data.model;
 
-import com.marvis.primeloan.enums.Gender;
-import com.marvis.primeloan.enums.Role;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
-
-import java.time.LocalDate;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import java.util.Collection;
+import java.util.List;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Entity
-@Table(name ="customer")
-public class User {
+public class User implements UserDetails {
+    private AppUser appUser;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "customerId")
-    private Long id;
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(appUser.getRole().name()));
+    }
 
-    @NotNull(message = "This field is required")
-    @NotEmpty(message = "This field is required")
-    private String firstName;
+    @Override
+    public String getPassword() {
+        return appUser.getPassword();
+    }
 
-    @NotNull(message = "This field is required")
-    @NotEmpty(message = "This field is required")
-    private String lastName;
+    @Override
+    public String getUsername() {
+        return appUser.getEmail();
+    }
 
-    @NotNull(message = "This field is required")
-    @NotEmpty(message = "This field is required")
-    private String otherName;
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
 
-    @Enumerated(EnumType.STRING)
-    private Gender gender;
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
 
-    private LocalDate DateOfBirth;
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
 
-    @NotNull(message = "This field is required")
-    @NotEmpty(message = "This field is required")
-    private String phoneNumber;
-
-    @NotNull(message = "This field is required")
-    @NotEmpty(message = "This field is required")
-    @Email(message = "This field requires a valid email address")
-    private String email;
-
-    @NotNull(message = "This field is required")
-    @NotEmpty(message = "This field is required")
-    private String password;
-
-    @Embedded
-    private Address address;
-
-    @Enumerated(EnumType.STRING)
-    private Role role;
-
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }
