@@ -17,7 +17,6 @@ public class Token {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String jwt;
     private String email;
     private Boolean isRevoked;

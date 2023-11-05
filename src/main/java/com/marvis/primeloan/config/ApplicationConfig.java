@@ -1,6 +1,6 @@
 package com.marvis.primeloan.config;
 
-import com.marvis.primeloan.data.repositories.UserRepository;
+import com.marvis.primeloan.data.repositories.AppUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,11 +18,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @RequiredArgsConstructor
 public class ApplicationConfig {
 
-    private final UserRepository userRepository;
+    private final AppUserRepository appUserRepository;
 
     @Bean
     public UserDetailsService userDetailsService() {
-        return username -> (UserDetails) userRepository.findByEmailIgnoreCase(username)
+        return username -> (UserDetails) appUserRepository.findByEmailIgnoreCase(username)
                 .orElseThrow( () -> new UsernameNotFoundException("Username not found"));
     }
 
@@ -41,7 +41,8 @@ public class ApplicationConfig {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
-    private PasswordEncoder passwordEncoder() {
+    @Bean
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 }

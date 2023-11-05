@@ -1,4 +1,4 @@
-package com.marvis.primeloan.enums;
+package com.marvis.primeloan.data.model.enums;
 
 public enum RepaymentPreference {
 

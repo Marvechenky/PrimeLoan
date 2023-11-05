@@ -1,23 +1,31 @@
 package com.marvis.primeloan.data.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Embeddable;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.*;
 
 @Getter
 @Setter
-@Embeddable
+@Entity
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Address {
-    @Column(name = "house_number")
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Column(name = "house_number", nullable = false)
     private String houseNumber;
-    @Column(name = "street_name")
+    @Column(name = "street_name", nullable = false)
     private String streetName;
-    @Column(name = "city")
+    @Column(name = "city", nullable = false)
     private String city;
-    @Column(name = "state")
+    @Column(name = "state", nullable = false)
     private String state;
-    @Column(name = "postal_code")
+    @Column(name = "postal_code", nullable = false)
     private String postalCode;
+    @OneToOne(mappedBy = "address")
+    private Customer customer;
+    @Column(name = "country", nullable = false)
+    private String country;
 
 }

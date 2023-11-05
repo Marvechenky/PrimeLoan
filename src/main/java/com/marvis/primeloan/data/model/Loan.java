@@ -1,7 +1,8 @@
 package com.marvis.primeloan.data.model;
 
-import com.marvis.primeloan.enums.LoanStatus;
-import com.marvis.primeloan.enums.RepaymentPreference;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.marvis.primeloan.data.model.enums.LoanApplicationStatus;
+import com.marvis.primeloan.data.model.enums.RepaymentPreference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -23,12 +24,23 @@ public class Loan {
 
     private String purpose;
 
+    private String reasonForRejection;
+
     @Enumerated(value = EnumType.STRING)
     private RepaymentPreference repaymentPreference;
 
     @Enumerated(value = EnumType.STRING)
-    private LoanStatus loanStatus;
+    private LoanApplicationStatus loanApplicationStatus;
 
-    @Embedded
-    private Agreement loanAgreement;
+    @OneToOne
+    @JoinColumn(name = "loan_id")
+    private LoanAgreement loanAgreement;
+
+    @OneToOne
+    @JoinColumn(name = "customer_id")
+    @JsonProperty
+    private Customer customer;
+
+    @OneToOne
+    private LoanOfficer loanOfficer;
 }

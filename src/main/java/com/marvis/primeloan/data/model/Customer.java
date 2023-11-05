@@ -1,4 +1,6 @@
 package com.marvis.primeloan.data.model;
+
+import com.marvis.primeloan.data.model.enums.Gender;
 import com.marvis.primeloan.data.model.enums.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -7,21 +9,22 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.NaturalId;
 
+import java.time.LocalDateTime;
 import java.util.Set;
-
 
 @Getter
 @Setter
-@Builder
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
-public class AppUser {
+public class Customer {
+
+    private LocalDateTime createdAt;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
 
     @NotNull(message = "This field is required")
     @NotEmpty(message = "This field is required")
@@ -34,6 +37,8 @@ public class AppUser {
     @NotNull(message = "This field is required")
     @NotEmpty(message = "This field is required")
     private String otherName;
+
+    private Gender gender;
 
     @NotNull(message = "This field is required")
     @NotEmpty(message = "This field is required")
@@ -49,8 +54,17 @@ public class AppUser {
     @NotEmpty(message = "This field is required")
     private String password;
 
+    private String birthDay;
+
+    @OneToOne
+    @JoinColumn(name = "address_id")
+    private Address address;
+
+    @OneToOne
+    private Loan loan;
 
     @ElementCollection
     private Set<Role> role;
+
 
 }

@@ -1,5 +1,6 @@
 package com.marvis.primeloan.config;
 
+import com.marvis.primeloan.data.repositories.TokenRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,6 +24,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
 
+    private final TokenRepository tokenRepository;
+
     @Override
     protected void doFilterInternal(
             @NonNull HttpServletRequest request,
@@ -38,8 +41,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
         jwtToken = authenticationHeader.substring(7);
         userEmail = jwtService.extractUsername(jwtToken);
+
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
+
             if (jwtService.isTokenValid(jwtToken, userDetails)) {
                 UsernamePasswordAuthenticationToken authenticationToken
                         = new UsernamePasswordAuthenticationToken(
