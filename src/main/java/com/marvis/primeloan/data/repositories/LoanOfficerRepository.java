@@ -7,5 +7,5 @@ import java.util.Optional;
 
 public interface LoanOfficerRepository extends JpaRepository<LoanOfficer, Long> {
 
-    Optional<LoanOfficer> findByUsername(String username);
+    Optional<LoanOfficer> findByEmployeeId(String EmployeeId);
 }

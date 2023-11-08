@@ -1,5 +1,4 @@
 package com.marvis.primeloan.service;
-
 import com.marvis.primeloan.data.model.Loan;
 import com.marvis.primeloan.data.model.LoanAgreement;
 import com.marvis.primeloan.data.repositories.LoanAgreementRepository;

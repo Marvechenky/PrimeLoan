@@ -1,7 +1,9 @@
 package com.marvis.primeloan.service;
 
-import com.marvis.primeloan.data.dto.request.LoanApplicationForm;
+import com.marvis.primeloan.data.dto.request.LoanApplicationRequest;
+import com.marvis.primeloan.data.dto.request.LoginRequest;
 import com.marvis.primeloan.data.dto.request.RegistrationRequest;
+import com.marvis.primeloan.data.dto.request.ViewLoanApplicationRequest;
 import com.marvis.primeloan.data.dto.response.RegistrationResponse;
 import com.marvis.primeloan.data.dto.response.Response;
 import com.marvis.primeloan.data.dto.response.ViewLoanApplicationStatus;
@@ -15,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Set;
 
@@ -32,11 +34,11 @@ public class CustomerServiceImpl implements CustomerService {
     public RegistrationResponse register(RegistrationRequest registrationRequest) {
         try {
             Customer customer = getCustomerPersonalDetails(registrationRequest);
-            Address address = getCustomerAddress(registrationRequest);
-            addressRepository.save(address);
-            customerRepository.save(customer);
+//            Address address = getCustomerAddress(registrationRequest);
+//            addressRepository.save(address);
+           var savedCustomer= customerRepository.save(customer);
             return RegistrationResponse.builder()
-                    .id(customer.getId())
+                    .id(savedCustomer.getId())
                     .message("Registration successful")
                     .httpStatus(HttpStatus.OK)
                     .build();
@@ -51,15 +53,19 @@ public class CustomerServiceImpl implements CustomerService {
 
     private Customer getCustomerPersonalDetails(RegistrationRequest registrationRequest) {
         Customer customer = new Customer();
-        customer.setFirstName(registrationRequest.getFirstName());
-        customer.setOtherName(registrationRequest.getOtherName());
-        customer.setLastName(registrationRequest.getLastName());
+        AppUser appUser = new AppUser();
+        customer.setCreatedAt(LocalDateTime.now());
+        appUser.setFirstName(registrationRequest.getFirstName());
+        appUser.setOtherName(registrationRequest.getOtherName());
+        appUser.setLastName(registrationRequest.getLastName());
         customer.setGender(registrationRequest.getGender());
         customer.setBirthDay(registrationRequest.getBirthDay());
-        customer.setPhoneNumber(registrationRequest.getPhoneNumber());
-        customer.setEmail(registrationRequest.getEmail());
-        customer.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
-        customer.setRole(Set.of(Role.CUSTOMER));
+        appUser.setPhoneNumber(registrationRequest.getPhoneNumber());
+        appUser.setEmail(registrationRequest.getEmail());
+        appUser.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
+        customer.setAddress(getCustomerAddress(registrationRequest));
+        appUser.setRole(Set.of(Role.CUSTOMER));
+        customer.setAppUser(appUser);
         return customer;
     }
 
@@ -80,7 +86,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public Optional<Customer> findCustomerByEmailIgnoreCase(String email) {
-        return customerRepository.findByEmail(email);
+        return customerRepository.findByAppUser_Email(email);
     }
 
     @Override
@@ -89,14 +95,14 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Response applyForLoan(LoanApplicationForm loanApplicationForm) {
+    public Response applyForLoan(LoanApplicationRequest loanApplicationRequest) {
         try {
-            Customer customer = customerRepository.findById(loanApplicationForm.getId())
+            Customer customer = customerRepository.findById(loanApplicationRequest.getId())
                     .orElseThrow(() -> new CustomerNotFoundException("Customer with does not exist"));
 
             Optional<Loan> loanFound = loanService.findLoan(customer.getId());
             if (loanFound.isPresent()) throw new RuntimeException("You have already applied for loan");
-            Loan loan = buildLoan(loanApplicationForm);
+            Loan loan = buildLoan(loanApplicationRequest);
             loan.setCustomer(customer);
             loanService.save(loan);
             customer.setLoan(loan);
@@ -108,9 +114,10 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public ViewLoanApplicationStatus viewLoanApplicationStatus(LoanApplicationForm loanApplicationForm) {
+    public ViewLoanApplicationStatus viewLoanApplicationStatus(ViewLoanApplicationRequest viewLoanApplicationRequest) {
+
         try {
-            Customer customer = customerRepository.findById(loanApplicationForm.getId())
+            Customer customer = customerRepository.findById(viewLoanApplicationRequest.getId())
                     .orElseThrow(() -> new CustomerNotFoundException("Customer does not exist"));
             return ViewLoanApplicationStatus.builder()
                     .httpStatus(HttpStatus.OK)
@@ -126,11 +133,12 @@ public class CustomerServiceImpl implements CustomerService {
         }
     }
 
-    private Loan buildLoan(LoanApplicationForm loanApplicationForm) {
+
+    private Loan buildLoan(LoanApplicationRequest loanApplicationRequest) {
         return Loan.builder()
-                .amount(loanApplicationForm.getAmount())
-                .purpose(loanApplicationForm.getPurpose())
-                .repaymentPreference(loanApplicationForm.getRepaymentPreference())
+                .amount(loanApplicationRequest.getAmount())
+                .purpose(loanApplicationRequest.getPurpose())
+                .repaymentPreference(loanApplicationRequest.getRepaymentPreference())
                 .loanApplicationStatus(LoanApplicationStatus.IN_PROGRESS)
                 .build();
     }
@@ -148,4 +156,11 @@ public class CustomerServiceImpl implements CustomerService {
     public Optional<LoanAgreement> viewLoanAgreement(Long id) {
         return loanService.viewLoanAgreement(id);
     }
+
+    @Override
+    public Response login(LoginRequest loginRequest) {
+        return null;
+    }
+
+
 }

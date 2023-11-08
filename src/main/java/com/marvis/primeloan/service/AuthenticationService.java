@@ -6,6 +6,7 @@ import com.marvis.primeloan.data.dto.request.RegistrationRequest;
 import com.marvis.primeloan.data.model.AppUser;
 import com.marvis.primeloan.data.model.Customer;
 import com.marvis.primeloan.data.model.Token;
+import com.marvis.primeloan.data.repositories.CustomerRepository;
 import com.marvis.primeloan.data.repositories.TokenRepository;
 import com.marvis.primeloan.data.model.enums.Role;
 import com.marvis.primeloan.exception.AppUserManagementException;
@@ -31,6 +32,7 @@ public class AuthenticationService {
     private final AppUserService appUserService;
     private final UserDetailsService userDetailsService;
     private final AuthenticationManager authenticationManager;
+    private final CustomerRepository customerRepository;
 
     private final TokenRepository tokenRepository;
 
@@ -63,7 +65,8 @@ public class AuthenticationService {
                 .otherName(registrationRequest.getOtherName())
                 .phoneNumber(registrationRequest.getPhoneNumber())
                 .build();
-//        customer.setAppUser(appUser);
+        customer.setAppUser(appUser);
+        customerRepository.save(customer);
         return appUserService.saveUser(appUser);
     }
 

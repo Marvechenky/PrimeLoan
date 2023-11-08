@@ -23,9 +23,9 @@ public class Address {
     private String state;
     @Column(name = "postal_code", nullable = false)
     private String postalCode;
-    @OneToOne(mappedBy = "address")
-    private Customer customer;
     @Column(name = "country", nullable = false)
     private String country;
+    @OneToOne(mappedBy = "address")
+    private Customer customer;
 
 }

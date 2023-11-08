@@ -5,7 +5,6 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import org.hibernate.annotations.NaturalId;
 
 import java.util.Set;
 
@@ -39,7 +38,7 @@ public class AppUser {
     @NotEmpty(message = "This field is required")
     private String phoneNumber;
 
-    @NaturalId(mutable = true)
+   // @NaturalId(mutable = true)
     @NotNull(message = "This field is required")
     @NotEmpty(message = "This field is required")
     @Email(message = "This field requires a valid email address")

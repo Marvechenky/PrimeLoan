@@ -1,15 +1,13 @@
 package com.marvis.primeloan.data.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.NaturalId;
 
 @Getter
 @Setter
 @Entity
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class LoanOfficer {
@@ -17,10 +15,12 @@ public class LoanOfficer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(nullable = false, unique = true)
-    private String username;
-    @Column(nullable = false)
-    private String password;
+    private String employeeId;
+
+    @OneToOne
+    private AppUser appUser;
 
 
 }

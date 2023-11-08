@@ -1,7 +1,8 @@
 package com.marvis.primeloan.service;
-
-import com.marvis.primeloan.data.dto.request.LoanApplicationForm;
+import com.marvis.primeloan.data.dto.request.LoanApplicationRequest;
+import com.marvis.primeloan.data.dto.request.LoginRequest;
 import com.marvis.primeloan.data.dto.request.RegistrationRequest;
+import com.marvis.primeloan.data.dto.request.ViewLoanApplicationRequest;
 import com.marvis.primeloan.data.dto.response.RegistrationResponse;
 import com.marvis.primeloan.data.dto.response.Response;
 import com.marvis.primeloan.data.dto.response.ViewLoanApplicationStatus;
@@ -19,11 +20,11 @@ public interface CustomerService {
 
     Customer save(Customer customer);
 
-    Response applyForLoan(LoanApplicationForm loanApplicationForm);
+    Response applyForLoan(LoanApplicationRequest loanApplicationRequest);
 
-    ViewLoanApplicationStatus viewLoanApplicationStatus(LoanApplicationForm loanApplicationForm);
+    ViewLoanApplicationStatus viewLoanApplicationStatus(ViewLoanApplicationRequest viewLoanApplicationRequest);
 
     Optional<LoanAgreement> viewLoanAgreement(Long id);
 
-
+    Response login(LoginRequest loginRequest);
 }
